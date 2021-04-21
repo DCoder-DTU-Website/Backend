@@ -5,6 +5,7 @@ const db = require("./db");
 const projectRouter = require("./routes/project-router");
 const eventRouter = require("./routes/event-router");
 const lectureRouter = require("./routes/lecture-router");
+const galleryRouter = require("./routes/gallery-router");
 
 const app = express();
 const apiPort = 8080;
@@ -22,5 +23,6 @@ app.get("/", (req, res) => {
 app.use("/api", projectRouter);
 app.use("/api", eventRouter);
 app.use("/api", lectureRouter);
+app.use("/api", galleryRouter);
 
 app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`));
