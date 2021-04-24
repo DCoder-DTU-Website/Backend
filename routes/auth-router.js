@@ -14,6 +14,7 @@ router.post(
   }),
   authCtrl.login
 );
+router.get("/user", authCtrl.authenticateToken, authCtrl.user);
 router.get("/logout", authCtrl.logout);
 
 module.exports = router;
