@@ -1,11 +1,17 @@
 const express = require("express");
 const cors = require("cors");
 
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
+const Session = require("express-session");
+
 const db = require("./db");
 const projectRouter = require("./routes/project-router");
 const eventRouter = require("./routes/event-router");
 const lectureRouter = require("./routes/lecture-router");
 const galleryRouter = require("./routes/gallery-router");
+const authRouter = require("./routes/auth-router");
+const User = require("./models/user");
 
 const app = express();
 const apiPort = 8080;
@@ -14,12 +20,22 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(express.json());
 
+app.use(
+  Session({ secret: "Thisissecret", resave: true, saveUninitialized: true })
+);
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+app.use("/api", authRouter);
 app.use("/api", projectRouter);
 app.use("/api", eventRouter);
 app.use("/api", lectureRouter);
