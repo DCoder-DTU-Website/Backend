@@ -11,12 +11,16 @@ module.exports.authenticateToken = (req, res, next) => {
 
   if (token == null) return res.sendStatus(401);
 
-  jwt.verify(token, "Thisissecret", (err, user) => {
+  jwt.verify(token, "Thisissecret", async (err, user) => {
     console.log(err);
 
     if (err) return res.sendStatus(403);
 
-    req.user = user;
+    const userDb = await User.findOne({
+      email: user.email,
+      username: user.username,
+    }).exec();
+    req.user = userDb;
 
     next();
   });
@@ -53,5 +57,6 @@ module.exports.logout = (req, res) => {
 };
 
 module.exports.user = (req, res) => {
+  console.log(req.user);
   res.send(req.user);
 };
