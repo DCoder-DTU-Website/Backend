@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const UserProfile = require("../models/userProfile");
 const jwt = require("jsonwebtoken");
 
 function generateAccessToken(user) {
@@ -12,8 +13,6 @@ module.exports.authenticateToken = (req, res, next) => {
   if (token == null) return res.sendStatus(401);
 
   jwt.verify(token, "Thisissecret", async (err, user) => {
-    console.log(err);
-
     if (err) return res.sendStatus(403);
 
     const userDb = await User.findOne({
@@ -36,6 +35,8 @@ module.exports.register = async (req, res) => {
       const token = generateAccessToken({ email, username });
       res.json(token);
     });
+    const userProfile = new UserProfile({ email });
+    await userProfile.save();
   } catch (e) {
     res.send(e);
   }
@@ -52,11 +53,9 @@ module.exports.login = async (req, res) => {
 
 module.exports.logout = (req, res) => {
   req.logout();
-  console.log(req.user);
   res.send("Logged out Successfully");
 };
 
 module.exports.user = (req, res) => {
-  console.log(req.user);
   res.send(req.user);
 };

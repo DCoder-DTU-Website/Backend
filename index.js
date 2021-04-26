@@ -11,6 +11,7 @@ const eventRouter = require("./routes/event-router");
 const lectureRouter = require("./routes/lecture-router");
 const galleryRouter = require("./routes/gallery-router");
 const authRouter = require("./routes/auth-router");
+const userProfileRouter = require("./routes/user-profile-router");
 const User = require("./models/user");
 
 const app = express();
@@ -36,6 +37,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api", authRouter);
+app.use("/api", userProfileRouter);
 app.use("/api", projectRouter);
 app.use("/api", eventRouter);
 app.use("/api", lectureRouter);

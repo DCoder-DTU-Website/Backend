@@ -14,6 +14,7 @@ const Profile = new Schema({
   codechef: String,
   leetcode: String,
   branch: String,
+  year: String,
   techStack: [String],
   workingWith: [String],
 });
