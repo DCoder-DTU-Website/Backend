@@ -9,5 +9,6 @@ router.post("/project/:id/confirm", ProjectCtrl.confirmProject);
 router.get("/project/all", ProjectCtrl.getProjects);
 router.get("/project/unconfirmed", ProjectCtrl.getUnconfirmedProjects);
 router.get("/project/:id", ProjectCtrl.getProjectById);
+router.get("/project/:id/delete",ProjectCtrl.deleteProject);
 
 module.exports = router;
