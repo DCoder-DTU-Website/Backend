@@ -13,6 +13,7 @@ const galleryRouter = require("./routes/gallery-router");
 const authRouter = require("./routes/auth-router");
 const userProfileRouter = require("./routes/user-profile-router");
 const User = require("./models/user");
+const contactRouter = require("./routes/contact-router")
 
 const app = express();
 const apiPort = 8080;
@@ -42,5 +43,7 @@ app.use("/api", projectRouter);
 app.use("/api", eventRouter);
 app.use("/api", lectureRouter);
 app.use("/api", galleryRouter);
+app.use("/api", contactRouter);
+
 
 app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`));
