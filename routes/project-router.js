@@ -6,9 +6,7 @@ const router = express.Router();
 
 router.post("/project/add", ProjectCtrl.createProject);
 router.post("/project/:id/confirm", ProjectCtrl.confirmProject);
-router.post("/project/:id/delete", function (req, res) {
-  ProjectCtrl.deleteProject;
-});
+router.delete("/project/:id/delete", ProjectCtrl.deleteProject);
 router.get("/project/all", ProjectCtrl.getProjects);
 router.get("/project/unconfirmed", ProjectCtrl.getUnconfirmedProjects);
 router.get("/project/:id", ProjectCtrl.getProjectById);

@@ -70,8 +70,8 @@ confirmProject = (req, res) => {
   });
 };
 
-deleteProject = async (req, res) => {
-  await Project.findOneAndDelete({ _id: req.params.id }, (err, project) => {
+deleteProject = (req, res) => {
+  Project.findOneAndDelete({ _id: req.params.id }, (err, project) => {
     if (err) {
       return res.status(400).json({ success: false, error: err });
     }
@@ -131,6 +131,7 @@ getUnconfirmedProjects = async (req, res) => {
 module.exports = {
   createProject,
   confirmProject,
+  deleteProject,
   getProjects,
   getProjectById,
   getUnconfirmedProjects,
