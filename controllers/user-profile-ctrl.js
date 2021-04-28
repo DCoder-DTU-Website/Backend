@@ -3,7 +3,8 @@ const mongoose = require("mongoose");
 
 module.exports.updateProfile = async (req, res) => {
   try {
-    const { user, data } = req.body;
+    const { data } = req.body;
+    const user = req.body.user || req.body.userFromAdmin;
     await UserProfile.findOneAndUpdate({ email: user.email }, { ...data });
     res.send("Successfully updated profile!");
   } catch (err) {
@@ -13,7 +14,7 @@ module.exports.updateProfile = async (req, res) => {
 
 module.exports.getProfile = async (req, res) => {
   try {
-    const { user } = req.body;
+    const user = req.body.user || req.body.userFromAdmin;
     const userProfile = await UserProfile.findOne({ email: user.email });
     res.send(userProfile);
   } catch (err) {
@@ -37,11 +38,9 @@ module.exports.deleteProfile = (req, res) => {
     }
 
     if (!user) {
-      return res
-        .status(404)
-        .json({ success: false, error: `user not found` });
+      return res.status(404).json({ success: false, error: `user not found` });
     }
-    console.log(user)
+    console.log(user);
     return res.status(200).json({ success: true, data: user });
   }).catch((err) => console.log(err));
 };
