@@ -9,6 +9,10 @@ mongoose
     console.error("Connection error", e.message);
   });
 
+mongoose.set("useNewUrlParser", true);
+mongoose.set("useFindAndModify", false);
+mongoose.set("useCreateIndex", true);
+
 const db = mongoose.connection;
 
 module.exports = db;

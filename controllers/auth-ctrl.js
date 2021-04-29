@@ -7,22 +7,52 @@ function generateAccessToken(user) {
 }
 
 module.exports.authenticateToken = (req, res, next) => {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
+  try {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
 
-  if (token == null) return res.sendStatus(401);
+    if (token == null) return res.sendStatus(401);
 
-  jwt.verify(token, "Thisissecret", async (err, user) => {
-    if (err) return res.sendStatus(403);
+    jwt.verify(token, "Thisissecret", async (err, user) => {
+      if (err) return res.sendStatus(403);
 
-    const userDb = await User.findOne({
-      email: user.email,
-      username: user.username,
-    }).exec();
-    req.user = userDb;
+      const userDb = await User.findOne({
+        email: user.email,
+        username: user.username,
+      }).exec();
+      req.user = userDb;
 
-    next();
-  });
+      next();
+    });
+  } catch (err) {
+    res.send(err);
+  }
+};
+
+module.exports.authenticateTokenAdmin = (req, res, next) => {
+  try {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
+
+    if (token == null) return res.sendStatus(401);
+
+    jwt.verify(token, "Thisissecret", async (err, user) => {
+      if (err) return res.sendStatus(403);
+
+      const userDb = await User.findOne({
+        email: user.email,
+        username: user.username,
+      }).exec();
+      if (userDb.isAdmin) {
+        req.user = userDb;
+      } else {
+        return res.sendStatus(401);
+      }
+      next();
+    });
+  } catch (err) {
+    res.send(err);
+  }
 };
 
 module.exports.register = async (req, res) => {
@@ -37,25 +67,37 @@ module.exports.register = async (req, res) => {
     });
     const userProfile = new UserProfile({ email });
     await userProfile.save();
-  } catch (e) {
-    res.send(e);
+  } catch (err) {
+    res.send(err);
   }
 };
 
 module.exports.login = async (req, res) => {
-  const token = generateAccessToken({
-    email: req.body.email,
-    username: req.body.username,
-  });
-  res.json(token);
-  res.send("Succesfully logged in");
+  try {
+    const token = generateAccessToken({
+      email: req.body.email,
+      username: req.body.username,
+    });
+    res.json(token);
+    res.send("Succesfully logged in");
+  } catch (err) {
+    res.send(err);
+  }
 };
 
 module.exports.logout = (req, res) => {
-  req.logout();
-  res.send("Logged out Successfully");
+  try {
+    req.logout();
+    res.send("Logged out Successfully");
+  } catch (err) {
+    res.send(err);
+  }
 };
 
 module.exports.user = (req, res) => {
-  res.send(req.user);
+  try {
+    res.send(req.user);
+  } catch (err) {
+    res.send(err);
+  }
 };
