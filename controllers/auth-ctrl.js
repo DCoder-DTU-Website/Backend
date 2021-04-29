@@ -135,9 +135,9 @@ module.exports.resetPass = (req, res) => {
           from: "temp24918@gmail.com",
           subject: "Password reset",
           html: `
-          <p>You requested for password reset</p>
+          <p>You requested for password reset.</p>
           <h2> Valid for 1hr only </h2>
-          <h5>Click in this <a href = "http://localhost:3000/reset/${token}">link </a> to reset password</h5>
+          <h5>Click on this <a href = "http://localhost:3000/reset/${token}">link </a> to reset your password.</h5>
           `,
         });
         res.send({ message: "Check your email" });
@@ -147,7 +147,6 @@ module.exports.resetPass = (req, res) => {
 };
 
 module.exports.passwordReset = (req, res) => {
-  console.log(req.body);
   User.findOne({
     resetToken: req.body.token,
     expireToken: { $gt: Date.now() },

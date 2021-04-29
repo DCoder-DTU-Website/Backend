@@ -40,7 +40,6 @@ module.exports.deleteProfile = (req, res) => {
     if (!user) {
       return res.status(404).json({ success: false, error: `user not found` });
     }
-    console.log(user);
     return res.status(200).json({ success: true, data: user });
   }).catch((err) => console.log(err));
 };
