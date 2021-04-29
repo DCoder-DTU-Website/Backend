@@ -1,6 +1,10 @@
 const User = require("../models/user");
 const UserProfile = require("../models/userProfile");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
+const nodemailer = require("nodemailer");
+const passportLocalMongoose = require("passport-local-mongoose");
+const { resolveSoa } = require("dns");
 
 function generateAccessToken(user) {
   return jwt.sign(user, "Thisissecret", { expiresIn: "60000s" });
@@ -100,4 +104,62 @@ module.exports.user = (req, res) => {
   } catch (err) {
     res.send(err);
   }
+};
+
+module.exports.resetPass = (req, res) => {
+  let transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "temp24918@gmail.com", // generated ethereal user
+      pass: "temp@999", // generated ethereal password
+    },
+    tls: {
+      rejectUnauthorized: false,
+    },
+  });
+
+  crypto.randomBytes(32, (err, buffer) => {
+    if (err) {
+      console.log(err);
+    }
+    const token = buffer.toString("hex");
+    User.findOne({ email: req.body.email }).then((user) => {
+      if (!user) {
+        return res.send({ message: "No such user exist !" });
+      }
+      user.resetToken = token;
+      user.expireToken = Date.now() + 3600000;
+      user.save().then((result) => {
+        transporter.sendMail({
+          to: user.email,
+          from: "temp24918@gmail.com",
+          subject: "Password reset",
+          html: `
+          <p>You requested for password reset</p>
+          <h2> Valid for 1hr only </h2>
+          <h5>Click in this <a href = "http://localhost:3000/reset/${token}">link </a> to reset password</h5>
+          `,
+        });
+        res.send({ message: "Check your email" });
+      });
+    });
+  });
+};
+
+module.exports.passwordReset = (req, res) => {
+  console.log(req.body);
+  User.findOne({
+    resetToken: req.body.token,
+    expireToken: { $gt: Date.now() },
+  }).then((user) => {
+    if (!user) {
+      return res.status(422).json({ error: "Token is expired" });
+    }
+    user.changePassword(req.body.oldPassword, req.body.newPassword, (err) => {
+      if (err) return res.send({ message: "Invalid Password" });
+      else {
+        return res.send({ message: "Password Changed Successfully" });
+      }
+    });
+  });
 };
