@@ -3,6 +3,8 @@ const UserProfile = require("../models/userProfile");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
+const db = require("../db/index");
+
 const passportLocalMongoose = require("passport-local-mongoose");
 const { resolveSoa } = require("dns");
 
@@ -152,11 +154,14 @@ module.exports.passwordReset = (req, res) => {
     expireToken: { $gt: Date.now() },
   }).then((user) => {
     if (!user) {
-      return res.status(422).json({ error: "Token is expired" });
+      return res.send({ message: "Token is expired" });
     }
     user.changePassword(req.body.oldPassword, req.body.newPassword, (err) => {
       if (err) return res.send({ message: "Invalid Password" });
       else {
+        user.resetToken = undefined;
+        user.expireToken = undefined;
+        user.save();
         return res.send({ message: "Password Changed Successfully" });
       }
     });
