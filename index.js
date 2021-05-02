@@ -15,6 +15,8 @@ const userProfileRouter = require("./routes/user-profile-router");
 const User = require("./models/user");
 const contactRouter = require("./routes/contact-router")
 const userRouter = require("./routes/user-router")
+const noticesRouter = require("./routes/notices-router")
+
 
 const app = express();
 const apiPort = 8080;
@@ -46,6 +48,8 @@ app.use("/api", lectureRouter);
 app.use("/api", galleryRouter);
 app.use("/api", contactRouter);
 app.use("/api",userRouter);
+app.use("/api",noticesRouter);
+
 
 
 app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`));
