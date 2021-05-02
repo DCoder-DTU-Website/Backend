@@ -4,11 +4,11 @@ const mongoose = require("mongoose");
 module.exports.updateProfile = async (req, res) => {
   try {
     const { data } = req.body;
-    const user = req.body.user || req.body.userFromAdmin;
-    await UserProfile.findOneAndUpdate({ email: user.email }, { ...data });
+    await UserProfile.findOneAndUpdate({ email: data.email }, { ...data });
     res.send("Successfully updated profile!");
   } catch (err) {
-    res.send("Error updating profile!", err);
+    console.log(err);
+    res.status(500).send(err);
   }
 };
 
