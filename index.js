@@ -13,13 +13,12 @@ const galleryRouter = require("./routes/gallery-router");
 const authRouter = require("./routes/auth-router");
 const userProfileRouter = require("./routes/user-profile-router");
 const User = require("./models/user");
-const contactRouter = require("./routes/contact-router")
-const userRouter = require("./routes/user-router")
-const noticesRouter = require("./routes/notices-router")
-
+const contactRouter = require("./routes/contact-router");
+const userRouter = require("./routes/user-router");
+const noticesRouter = require("./routes/notices-router");
 
 const app = express();
-const apiPort = 8080;
+const apiPort = process.env.PORT || 8080;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
@@ -47,9 +46,7 @@ app.use("/api", eventRouter);
 app.use("/api", lectureRouter);
 app.use("/api", galleryRouter);
 app.use("/api", contactRouter);
-app.use("/api",userRouter);
-app.use("/api",noticesRouter);
-
-
+app.use("/api", userRouter);
+app.use("/api", noticesRouter);
 
 app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`));
