@@ -31,7 +31,7 @@
     // setup email data with unicode symbols
     let mailOptions = {
       from: '"Nodemailer Contact" temp24918@gmail.com', // sender address
-      to: "teltia.aditya22@gmail.com", // list of receivers
+      to: "dcoder.website@gmail.com", // list of receivers
       subject: "Node Contact Request", // Subject line
       text: "Hello world?", // plain text body
       html: output, // html body
