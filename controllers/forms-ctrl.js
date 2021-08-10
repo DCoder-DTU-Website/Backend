@@ -1,7 +1,7 @@
 const Form = require("../models/forms");
 const mongoose = require("mongoose");
 
-module.exports.createForms = (req, res) => {
+module.exports.createForm = (req, res) => {
   const body = req.body;
 
   if (!body) {
