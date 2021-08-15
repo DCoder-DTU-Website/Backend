@@ -17,6 +17,7 @@ const Profile = new Schema({
   year: String,
   techStack: [String],
   workingWith: [String],
+  resume: String,
 });
 
 module.exports = mongoose.model("profile", Profile);
