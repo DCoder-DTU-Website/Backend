@@ -17,6 +17,7 @@ const contactRouter = require("./routes/contact-router");
 const userRouter = require("./routes/user-router");
 const noticesRouter = require("./routes/notices-router");
 const formsRouter = require("./routes/form-router");
+const applicantRouter = require("./routes/applicant-router");
 
 const app = express();
 const apiPort = process.env.PORT || 8080;
@@ -50,5 +51,5 @@ app.use("/api", contactRouter);
 app.use("/api", userRouter);
 app.use("/api", noticesRouter);
 app.use("/api", formsRouter);
-
+app.use("/api", applicantRouter);
 app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`));
