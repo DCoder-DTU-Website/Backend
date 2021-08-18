@@ -42,33 +42,33 @@ module.exports.getRejectedApplicants = async (req, res) => {
 module.exports.createApplicant = async (req, res) => {
   const new_applicant = new UserApplied(req.body);
   try {
-    await new_applicant.save().then(() => {
+    new_applicant.save().then(() => {
+      var transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: "temp24918@gmail.com",
+          pass: "temp@999",
+        },
+        tls: {
+          rejectUnauthorized: false,
+        },
+      });
+
+      var mailOptions = {
+        from: "temp24918@gmail.com",
+        to: new_applicant.email,
+        subject: "Dcoder mein swagat hai aapka",
+        text: "Aapki jaankari hamne prapt krli hai ab kriya krke pratiksha krein hum jldi hi aapse sampark karenge",
+      };
+
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          res.send("Unable to send the mail to you");
+        } else {
+          res.send("Email sent: " + info.response);
+        }
+      });
       res.status(201).json(new_applicant);
-    });
-    var transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: "temp24918@gmail.com",
-        pass: "temp@999",
-      },
-      tls: {
-        rejectUnauthorized: false,
-      },
-    });
-
-    var mailOptions = {
-      from: "temp24918@gmail.com",
-      to: new_applicant.email,
-      subject: "Dcoder mein swagat hai aapka",
-      text: "Aapki jaankari hamne prapt krli hai ab kriya krke pratiksha krein hum jldi hi aapse sampark karenge",
-    };
-
-    transporter.sendMail(mailOptions, function (error, info) {
-      if (error) {
-        res.send("Unable to send the mail to you");
-      } else {
-        res.send("Email sent: " + info.response);
-      }
     });
   } catch (error) {
     res.status(400).json("Unable to save the details of the user");
@@ -90,13 +90,16 @@ module.exports.updateApplicant = async (req, res) => {
 };
 
 module.exports.setInterview = async (req, res) => {
-  const {id, interviewerName, interviewTime, interviewLink} = req.body;
+  const { id, interviewerName, interviewTime, interviewLink } = req.body;
   try {
-    const update_applicant = await UserApplied.findOneAndUpdate({_id: id}, {
-      interviewTime: interviewTime,
-      interviewLink: interviewLink,
-      interviewerName: interviewerName
-    });
+    const update_applicant = await UserApplied.findOneAndUpdate(
+      { _id: id },
+      {
+        interviewTime: interviewTime,
+        interviewLink: interviewLink,
+        interviewerName: interviewerName,
+      }
+    );
     var transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -122,19 +125,24 @@ module.exports.setInterview = async (req, res) => {
         res.send("Email sent: " + info.response);
       }
     });
-    return res.status(200).json({message: 'Successfully set interview', success: true});
+    return res
+      .status(200)
+      .json({ message: "Successfully set interview", success: true });
   } catch (error) {
     res.status(401).json({ message: error.message });
   }
 };
 
 module.exports.acceptApplicant = async (req, res) => {
-  const {id} = req.params;
+  const { id } = req.params;
   try {
-    const update_applicant = await UserApplied.findOneAndUpdate({_id: id}, {
-      interviewCompleted: true,
-      isAccepted: true
-    });
+    const update_applicant = await UserApplied.findOneAndUpdate(
+      { _id: id },
+      {
+        interviewCompleted: true,
+        isAccepted: true,
+      }
+    );
     var transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -160,19 +168,24 @@ module.exports.acceptApplicant = async (req, res) => {
         res.send("Email sent: " + info.response);
       }
     });
-    return res.status(200).json({message: 'Successfully set interview', success: true});
+    return res
+      .status(200)
+      .json({ message: "Successfully set interview", success: true });
   } catch (error) {
     res.status(401).json({ message: error.message });
   }
 };
 
 module.exports.rejectApplicant = async (req, res) => {
-  const {id} = req.params;
+  const { id } = req.params;
   try {
-    const update_applicant = await UserApplied.findOneAndUpdate({_id: id}, {
-      interviewCompleted: true,
-      isAccepted: false
-    });
+    const update_applicant = await UserApplied.findOneAndUpdate(
+      { _id: id },
+      {
+        interviewCompleted: true,
+        isAccepted: false,
+      }
+    );
     var transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -198,7 +211,9 @@ module.exports.rejectApplicant = async (req, res) => {
         res.send("Email sent: " + info.response);
       }
     });
-    return res.status(200).json({message: 'Successfully set interview', success: true});
+    return res
+      .status(200)
+      .json({ message: "Successfully set interview", success: true });
   } catch (error) {
     res.status(401).json({ message: error.message });
   }
