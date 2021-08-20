@@ -112,8 +112,8 @@ module.exports.resetPass = (req, res) => {
   let transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "temp24918@gmail.com", // generated ethereal user
-      pass: "temp@999", // generated ethereal password
+      user: "ttemp5172@gmail.com", // generated ethereal user
+      pass: "temp@123", // generated ethereal password
     },
     tls: {
       rejectUnauthorized: false,
@@ -134,7 +134,7 @@ module.exports.resetPass = (req, res) => {
       user.save().then((result) => {
         transporter.sendMail({
           to: user.email,
-          from: "temp24918@gmail.com",
+          from: "ttemp5172@gmail.com",
           subject: "Password reset",
           html: `
           <p>You requested for password reset.</p>
