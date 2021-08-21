@@ -148,6 +148,47 @@ module.exports.resetPass = (req, res) => {
   });
 };
 
+
+module.exports.forgotPass = (req, res) => {
+  let transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "ttemp5172@gmail.com", // generated ethereal user
+      pass: "temp@123", // generated ethereal password
+    },
+    tls: {
+      rejectUnauthorized: false,
+    },
+  });
+
+  crypto.randomBytes(32, (err, buffer) => {
+    if (err) {
+      console.log(err);
+    }
+    const token = buffer.toString("hex");
+    User.findOne({ email: req.body.email }).then((user) => {
+      if (!user) {
+        return res.send({ message: "No such user exist !" });
+      }
+      user.resetToken = token;
+      user.expireToken = Date.now() + 3600000;
+      user.save().then((result) => {
+        transporter.sendMail({
+          to: user.email,
+          from: "ttemp5172@gmail.com",
+          subject: "Password Forgot",
+          html: `
+          <p>You requested for password forgot.</p>
+          <h2> Valid for 1hr only </h2>
+          <h5>Click on this <a href = "http://localhost:3000/forgot/${token}">link </a> to reset your password.</h5>
+          `,
+        });
+        res.send({ message: "Check your email" });
+      });
+    });
+  });
+};
+
 module.exports.passwordReset = (req, res) => {
   User.findOne({
     resetToken: req.body.token,
@@ -157,6 +198,27 @@ module.exports.passwordReset = (req, res) => {
       return res.send({ message: "Token is expired" });
     }
     user.changePassword(req.body.oldPassword, req.body.newPassword, (err) => {
+      if (err) return res.send({ message: "Invalid Password" });
+      else {
+        user.resetToken = undefined;
+        user.expireToken = undefined;
+        user.save();
+        return res.send({ message: "Password Changed Successfully" });
+      }
+    });
+  });
+};
+
+
+module.exports.passwordForgot = (req, res) => {
+  User.findOne({
+    resetToken: req.body.token,
+    expireToken: { $gt: Date.now() },
+  }).then((user) => {
+    if (!user) {
+      return res.send({ message: "Token is expired" });
+    }
+    user.setPassword(req.body.newPassword, (err) => {
       if (err) return res.send({ message: "Invalid Password" });
       else {
         user.resetToken = undefined;
