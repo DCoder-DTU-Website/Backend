@@ -139,7 +139,7 @@ module.exports.resetPass = (req, res) => {
           html: `
           <p>You requested for password reset.</p>
           <h2> Valid for 1hr only </h2>
-          <h5>Click on this <a href = "http://localhost:3000/reset/${token}">link </a> to reset your password.</h5>
+          <h5>Click on this <a href = "https://teamdcoder.com/reset/${token}">link </a> to reset your password.</h5>
           `,
         });
         res.send({ message: "Check your email" });
@@ -180,7 +180,7 @@ module.exports.forgotPass = (req, res) => {
           html: `
           <p>You requested for password forgot.</p>
           <h2> Valid for 1hr only </h2>
-          <h5>Click on this <a href = "http://localhost:3000/forgot/${token}">link </a> to reset your password.</h5>
+          <h5>Click on this <a href = "https://teamdcoder.com/forgot/${token}">link </a> to reset your password.</h5>
           `,
         });
         res.send({ message: "Check your email" });
