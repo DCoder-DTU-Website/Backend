@@ -1,5 +1,6 @@
 const UserApplied = require("../models/applicants");
 var nodemailer = require("nodemailer");
+const { sendMail } = require("../utils/node-mailer");
 
 module.exports.getApplicants = async (req, res) => {
   try {
@@ -43,31 +44,19 @@ module.exports.createApplicant = async (req, res) => {
   const new_applicant = new UserApplied(req.body);
   try {
     new_applicant.save().then(() => {
-      var transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
+      const mailRes = sendMail(
+        {
+          service: "gmail",
           user: "temp24918@gmail.com",
           pass: "temp@999",
         },
-        tls: {
-          rejectUnauthorized: false,
-        },
-      });
-
-      var mailOptions = {
-        from: "temp24918@gmail.com",
-        to: new_applicant.email,
-        subject: "Dcoder mein swagat hai aapka",
-        text: "Aapki jaankari hamne prapt krli hai ab kriya krke pratiksha krein hum jldi hi aapse sampark karenge",
-      };
-
-      transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-          res.send("Unable to send the mail to you");
-        } else {
-          res.send("Email sent: " + info.response);
+        {
+          from: "temp24918@gmail.com",
+          to: new_applicant.email,
+          subject: "Dcoder mein swagat hai aapka",
+          text: "Aapki jaankari hamne prapt krli hai ab kriya krke pratiksha krein hum jldi hi aapse sampark karenge",
         }
-      });
+      );
       res.status(201).json(new_applicant);
     });
   } catch (error) {
