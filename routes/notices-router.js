@@ -8,7 +8,8 @@ const router = express.Router();
 router.post(
   "/notices/add",
   authCtrl.authenticateTokenAdmin,
-  NoticesCtrl.createNotice
+  NoticesCtrl.createNotice,
+  NoticesCtrl.sendMails
 );
 router.get("/notices/all", NoticesCtrl.getNotices);
 

@@ -1,4 +1,5 @@
 const Notice = require("../models/notices");
+const UserProfile = require("../models/userProfile");
 const mongoose = require("mongoose");
 
 module.exports.createNotice = (req, res) => {
@@ -47,4 +48,20 @@ module.exports.getNotices = async (req, res) => {
     }
     return res.status(200).json({ success: true, data: notice });
   }).catch((err) => console.log(err));
+};
+
+const sendMail = async (profile) => {
+  console.log(profile);
+};
+
+module.exports.sendMails = async (req, res) => {
+  try {
+    const profiles = await UserProfile.find({});
+    profiles.forEach((profile, index) => {
+      await sendMail(profile);
+    });
+    res.status(200).send("Mails sent successfully");
+  } catch (err) {
+    res.send("Error retrieving all profiles", err);
+  }
 };
