@@ -89,34 +89,26 @@ module.exports.setInterview = async (req, res) => {
         interviewerName: interviewerName,
       }
     );
-    var transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
+
+    const mailRes = sendMail(
+      {
+        service: "gmail",
         user: "temp24918@gmail.com",
         pass: "temp@999",
       },
-      tls: {
-        rejectUnauthorized: false,
-      },
-    });
-
-    var mailOptions = {
-      from: "temp24918@gmail.com",
-      to: new_applicant.email,
-      subject: "Interview has been set",
-      text: "Details of interview!",
-    };
-
-    transporter.sendMail(mailOptions, function (error, info) {
-      if (error) {
-        res.send("Unable to send the mail to you");
-      } else {
-        res.send("Email sent: " + info.response);
+      {
+        from: "temp24918@gmail.com",
+        to: new_applicant.email,
+        subject: "Interview has been set",
+        text: "Details of interview!",
       }
+    );
+
+    return res.status(200).json({
+      message: "Successfully set interview",
+      success: true,
+      mailRes: mailRes,
     });
-    return res
-      .status(200)
-      .json({ message: "Successfully set interview", success: true });
   } catch (error) {
     res.status(401).json({ message: error.message });
   }
@@ -132,34 +124,26 @@ module.exports.acceptApplicant = async (req, res) => {
         isAccepted: true,
       }
     );
-    var transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
+
+    const mailRes = sendMail(
+      {
+        service: "gmail",
         user: "temp24918@gmail.com",
         pass: "temp@999",
       },
-      tls: {
-        rejectUnauthorized: false,
-      },
-    });
-
-    var mailOptions = {
-      from: "temp24918@gmail.com",
-      to: new_applicant.email,
-      subject: "Accepted to D_Coder",
-      text: "Welcome to D_Coder",
-    };
-
-    transporter.sendMail(mailOptions, function (error, info) {
-      if (error) {
-        res.send("Unable to send the mail to you");
-      } else {
-        res.send("Email sent: " + info.response);
+      {
+        from: "temp24918@gmail.com",
+        to: new_applicant.email,
+        subject: "Accepted to D_Coder",
+        text: "Welcome to D_Coder",
       }
+    );
+
+    return res.status(200).json({
+      message: "Successfully set interview",
+      success: true,
+      mailRes: mailRes,
     });
-    return res
-      .status(200)
-      .json({ message: "Successfully set interview", success: true });
   } catch (error) {
     res.status(401).json({ message: error.message });
   }
@@ -175,34 +159,28 @@ module.exports.rejectApplicant = async (req, res) => {
         isAccepted: false,
       }
     );
-    var transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
+
+    const mailRes = sendMail(
+      {
+        service: "gmail",
         user: "temp24918@gmail.com",
         pass: "temp@999",
       },
-      tls: {
-        rejectUnauthorized: false,
-      },
-    });
-
-    var mailOptions = {
-      from: "temp24918@gmail.com",
-      to: new_applicant.email,
-      subject: "Rejected Application",
-      text: "Thanks for applying tho",
-    };
-
-    transporter.sendMail(mailOptions, function (error, info) {
-      if (error) {
-        res.send("Unable to send the mail to you");
-      } else {
-        res.send("Email sent: " + info.response);
+      {
+        from: "temp24918@gmail.com",
+        to: new_applicant.email,
+        subject: "Rejected Application",
+        text: "Thanks for applying tho",
       }
-    });
+    );
+
     return res
       .status(200)
-      .json({ message: "Successfully set interview", success: true });
+      .json({
+        message: "Successfully set interview",
+        success: true,
+        mailRes: mailRes,
+      });
   } catch (error) {
     res.status(401).json({ message: error.message });
   }
