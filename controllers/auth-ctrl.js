@@ -60,6 +60,31 @@ module.exports.authenticateTokenAdmin = (req, res, next) => {
   }
 };
 
+module.exports.authenticateTokenRecruiter = (req, res, next) => {
+  try {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
+    if (token == null) return res.sendStatus(401);
+
+    jwt.verify(token, "Thisissecret", async (err, user) => {
+      if (err) return res.sendStatus(403);
+
+      const userDb = await User.findOne({
+        email: user.email,
+        username: user.username,
+      }).exec();
+      if (userDb.isRecruiter) {
+        req.user = userDb;
+      } else {
+        return res.sendStatus(401);
+      }
+      next();
+    });
+  } catch (err) {
+    res.send(err);
+  }
+};
+
 module.exports.register = async (req, res) => {
   try {
     const { email, username, password } = req.body;

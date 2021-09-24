@@ -45,13 +45,28 @@ const UserApplied = new mongoose.Schema({
   interviewCompleted: {
     type: Boolean,
   },
-  inteviewLink: {
+  interviewLink: {
     type: String,
   },
   interviewTime: {
     type: String,
   },
   interviewerName: {
+    type: String,
+  },
+  taskCompletionScore: {
+    type: Number,
+  },
+  codingSkillsScore: {
+    type: Number,
+  },
+  enthusiasmScore: {
+    type: Number,
+  },
+  totalScore: {
+    type: Number,
+  },
+  remarksByRecruiter: {
     type: String,
   },
 });
