@@ -1,5 +1,4 @@
 const UserApplied = require("../models/applicants");
-var nodemailer = require("nodemailer");
 const { sendMail } = require("../utils/node-mailer");
 
 module.exports.getApplicants = async (req, res) => {
@@ -44,19 +43,12 @@ module.exports.createApplicant = async (req, res) => {
   const new_applicant = new UserApplied(req.body);
   try {
     new_applicant.save().then(() => {
-      const mailRes = sendMail(
-        {
-          service: "gmail",
-          user: "temp24918@gmail.com",
-          pass: "temp@999",
-        },
-        {
-          from: "temp24918@gmail.com",
-          to: new_applicant.email,
-          subject: "Dcoder mein swagat hai aapka",
-          text: "Aapki jaankari hamne prapt krli hai ab kriya krke pratiksha krein hum jldi hi aapse sampark karenge",
-        }
-      );
+      const mailRes = sendMail({
+        from: "temp24918@gmail.com",
+        to: new_applicant.email,
+        subject: "Dcoder mein swagat hai aapka",
+        text: "Aapki jaankari hamne prapt krli hai ab kriya krke pratiksha krein hum jldi hi aapse sampark karenge",
+      });
       res.status(201).json(new_applicant);
     });
   } catch (error) {
@@ -90,19 +82,12 @@ module.exports.setInterview = async (req, res) => {
       }
     );
 
-    const mailRes = sendMail(
-      {
-        service: "gmail",
-        user: "temp24918@gmail.com",
-        pass: "temp@999",
-      },
-      {
-        from: "temp24918@gmail.com",
-        to: new_applicant.email,
-        subject: "Interview has been set",
-        text: "Details of interview!",
-      }
-    );
+    const mailRes = sendMail({
+      from: "temp24918@gmail.com",
+      to: new_applicant.email,
+      subject: "Interview has been set",
+      text: "Details of interview!",
+    });
 
     return res.status(200).json({
       message: "Successfully set interview",
@@ -125,19 +110,12 @@ module.exports.acceptApplicant = async (req, res) => {
       }
     );
 
-    const mailRes = sendMail(
-      {
-        service: "gmail",
-        user: "temp24918@gmail.com",
-        pass: "temp@999",
-      },
-      {
-        from: "temp24918@gmail.com",
-        to: new_applicant.email,
-        subject: "Accepted to D_Coder",
-        text: "Welcome to D_Coder",
-      }
-    );
+    const mailRes = sendMail({
+      from: "temp24918@gmail.com",
+      to: new_applicant.email,
+      subject: "Accepted to D_Coder",
+      text: "Welcome to D_Coder",
+    });
 
     return res.status(200).json({
       message: "Successfully set interview",
@@ -160,27 +138,18 @@ module.exports.rejectApplicant = async (req, res) => {
       }
     );
 
-    const mailRes = sendMail(
-      {
-        service: "gmail",
-        user: "temp24918@gmail.com",
-        pass: "temp@999",
-      },
-      {
-        from: "temp24918@gmail.com",
-        to: new_applicant.email,
-        subject: "Rejected Application",
-        text: "Thanks for applying tho",
-      }
-    );
+    const mailRes = sendMail({
+      from: "temp24918@gmail.com",
+      to: new_applicant.email,
+      subject: "Rejected Application",
+      text: "Thanks for applying tho",
+    });
 
-    return res
-      .status(200)
-      .json({
-        message: "Successfully set interview",
-        success: true,
-        mailRes: mailRes,
-      });
+    return res.status(200).json({
+      message: "Successfully set interview",
+      success: true,
+      mailRes: mailRes,
+    });
   } catch (error) {
     res.status(401).json({ message: error.message });
   }

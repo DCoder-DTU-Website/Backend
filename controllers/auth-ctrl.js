@@ -39,7 +39,6 @@ module.exports.authenticateTokenAdmin = (req, res, next) => {
   try {
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
-
     if (token == null) return res.sendStatus(401);
 
     jwt.verify(token, "Thisissecret", async (err, user) => {
@@ -148,7 +147,6 @@ module.exports.resetPass = (req, res) => {
   });
 };
 
-
 module.exports.forgotPass = (req, res) => {
   let transporter = nodemailer.createTransport({
     service: "gmail",
@@ -208,7 +206,6 @@ module.exports.passwordReset = (req, res) => {
     });
   });
 };
-
 
 module.exports.passwordForgot = (req, res) => {
   User.findOne({

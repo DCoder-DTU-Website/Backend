@@ -10,4 +10,15 @@ router.delete(
   authCtrl.authenticateTokenAdmin,
   userCtrl.deleteProfile
 );
+router.patch(
+  "/user/:email/recruiter",
+  authCtrl.authenticateTokenAdmin,
+  userCtrl.setRecruiter
+);
+router.patch(
+  "/user/:email/remove-recruiter",
+  authCtrl.authenticateTokenAdmin,
+  userCtrl.removeRecruiter
+);
+
 module.exports = router;
