@@ -66,6 +66,7 @@ const UserApplied = new mongoose.Schema({
   totalScore: {
     type: Number,
   },
+  idRecruiter: {type: mongoose.Types.ObjectId, ref: 'user'},
   remarksByRecruiter: {
     type: String,
   },

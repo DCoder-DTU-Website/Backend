@@ -8,6 +8,16 @@ const router = express.Router();
 router.post("/applicants", applicantCtrl.createApplicant);
 
 // For Admin
+router.post(
+  "/applicants/assignToRecruiters",
+  authCtrl.authenticateTokenAdmin,
+  applicantCtrl.assignApplicantsToRecruiters
+);
+router.post(
+  "/applicants/assignToRecruitersBulk",
+  authCtrl.authenticateTokenAdmin,
+  applicantCtrl.assignApplicantsToRecruitersBulk
+);
 router.get(
   "/applicants/all",
   authCtrl.authenticateTokenAdmin,

@@ -1,5 +1,15 @@
+const mongoose = require("mongoose");
 const UserApplied = require("../models/applicants");
 const { sendMail } = require("../utils/node-mailer");
+
+
+function splitToChunks(array, parts) {
+  let result = [];
+  for (let i = parts; i > 0; i--) {
+      result.push(array.splice(0, Math.ceil(array.length / i)));
+  }
+  return result;
+}
 
 // For User
 module.exports.createApplicant = async (req, res) => {
@@ -20,6 +30,54 @@ module.exports.createApplicant = async (req, res) => {
 };
 
 // For Admin
+
+module.exports.assignApplicantsToRecruiters = async (req, res) => {
+  try {
+    //payload: [{idRecruiter: id, idApplicants:[idApplied1, idApplied2, idApplied3...]}, {...},...]
+    let reqs = req.body.payload;
+    console.log("REQS!", reqs);
+    reqs.forEach(async entry=>{
+      await UserApplied.updateMany(
+        {
+             _id: { "$in": entry.idApplicants }
+        }, 
+        {
+          idRecruiter: mongoose.Types.ObjectId(entry.idRecruiter)
+        })
+    });
+    res.status(200).json({ message: "Done"});
+  } catch (error) {
+    res.status(400).json({ error: error });
+  }
+};
+
+module.exports.assignApplicantsToRecruitersBulk = async (req, res) => {
+  try {
+    //idRecruiters: ['...','...',...], idApplicants: ['...','...',...]
+    let {idRecruiters, idApplicants} = req.body;
+    idApplicants = splitToChunks(idApplicants, idRecruiters.length);
+    let reqs = idRecruiters.map((id,index)=>{
+      return {
+        idRecruiter: id,
+        idApplicants: idApplicants[index]
+      }
+    });
+    reqs.forEach(async entry=>{
+      await UserApplied.updateMany(
+        {
+             _id: { "$in": entry.idApplicants }
+        }, 
+        {
+          idRecruiter: mongoose.Types.ObjectId(entry.idRecruiter)
+        })
+    });
+    res.status(200).json({ message: "Done"});
+  } catch (error) {
+    console.log("ERROR!:",error);
+    res.status(400).json({ error: error });
+  }
+};
+
 module.exports.getApplicants = async (req, res) => {
   try {
     const applicants = await UserApplied.find();
