@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const mongoose = require("mongoose");
+const userProfile = require("../models/userProfile");
 
 module.exports.deleteProfile = (req, res) => {
   User.findOneAndDelete({ username: req.params.email }, (err, user) => {
@@ -23,6 +24,12 @@ module.exports.setRecruiter = async (req, res) => {
       { isRecruiter: true },
       { new: true }
     );
+    await userProfile.findOneAndUpdate(
+      {
+        email: req.params.email,
+      },
+      { isRecruiter: true }
+    );
     if (!user) {
       return res.status(404).json({ success: false, error: `user not found` });
     }
@@ -40,6 +47,12 @@ module.exports.removeRecruiter = async (req, res) => {
       },
       { isRecruiter: false },
       { new: true }
+    );
+    await userProfile.findOneAndUpdate(
+      {
+        email: req.params.email,
+      },
+      { isRecruiter: false }
     );
     if (!user) {
       return res.status(404).json({ success: false, error: `user not found` });
