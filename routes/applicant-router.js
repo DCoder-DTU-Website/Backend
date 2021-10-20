@@ -50,6 +50,16 @@ router.post(
 );
 
 // For Recruiter
+router.get(
+  "/applicants/all-recruiter",
+  authCtrl.authenticateTokenRecruiter,
+  applicantCtrl.getApplicants
+);
+router.get(
+  "/applicants/awaiting-recruiter",
+  authCtrl.authenticateTokenRecruiter,
+  applicantCtrl.getAwaitingApplicants
+);
 router.post(
   "/applicants/setInterview",
   authCtrl.authenticateTokenRecruiter,
