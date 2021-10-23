@@ -2,18 +2,20 @@ const mongoose = require("mongoose");
 const UserApplied = require("../models/applicants");
 const { sendMail } = require("../utils/node-mailer");
 
-
 function splitToChunks(array, parts) {
   let result = [];
   for (let i = parts; i > 0; i--) {
-      result.push(array.splice(0, Math.ceil(array.length / i)));
+    result.push(array.splice(0, Math.ceil(array.length / i)));
   }
   return result;
 }
 
 // For User
 module.exports.createApplicant = async (req, res) => {
-  const new_applicant = new UserApplied(req.body);
+  const new_applicant = new UserApplied({
+    ...req.body,
+    isAccepted: 0,
+  });
   try {
     new_applicant.save().then(() => {
       const mailRes = sendMail({
@@ -36,16 +38,17 @@ module.exports.assignApplicantsToRecruiters = async (req, res) => {
     //payload: [{idRecruiter: id, idApplicants:[idApplied1, idApplied2, idApplied3...]}, {...},...]
     let reqs = req.body.payload;
     console.log("REQS!", reqs);
-    reqs.forEach(async entry=>{
+    reqs.forEach(async (entry) => {
       await UserApplied.updateMany(
         {
-             _id: { "$in": entry.idApplicants }
-        }, 
+          _id: { $in: entry.idApplicants },
+        },
         {
-          idRecruiter: mongoose.Types.ObjectId(entry.idRecruiter)
-        })
+          idRecruiter: mongoose.Types.ObjectId(entry.idRecruiter),
+        }
+      );
     });
-    res.status(200).json({ message: "Done"});
+    res.status(200).json({ message: "Done" });
   } catch (error) {
     res.status(400).json({ error: error });
   }
@@ -54,26 +57,27 @@ module.exports.assignApplicantsToRecruiters = async (req, res) => {
 module.exports.assignApplicantsToRecruitersBulk = async (req, res) => {
   try {
     //idRecruiters: ['...','...',...], idApplicants: ['...','...',...]
-    let {idRecruiters, idApplicants} = req.body;
+    let { idRecruiters, idApplicants } = req.body;
     idApplicants = splitToChunks(idApplicants, idRecruiters.length);
-    let reqs = idRecruiters.map((id,index)=>{
+    let reqs = idRecruiters.map((id, index) => {
       return {
         idRecruiter: id,
-        idApplicants: idApplicants[index]
-      }
+        idApplicants: idApplicants[index],
+      };
     });
-    reqs.forEach(async entry=>{
+    reqs.forEach(async (entry) => {
       await UserApplied.updateMany(
         {
-             _id: { "$in": entry.idApplicants }
-        }, 
+          _id: { $in: entry.idApplicants },
+        },
         {
-          idRecruiter: mongoose.Types.ObjectId(entry.idRecruiter)
-        })
+          idRecruiter: mongoose.Types.ObjectId(entry.idRecruiter),
+        }
+      );
     });
-    res.status(200).json({ message: "Done"});
+    res.status(200).json({ message: "Done" });
   } catch (error) {
-    console.log("ERROR!:",error);
+    console.log("ERROR!:", error);
     res.status(400).json({ error: error });
   }
 };
@@ -89,7 +93,10 @@ module.exports.getApplicants = async (req, res) => {
 
 module.exports.getAwaitingApplicants = async (req, res) => {
   try {
-    const applicants = await UserApplied.find({ interviewCompleted: false });
+    const applicants = await UserApplied.find({
+      interviewCompleted: true,
+      isAccepted: 0,
+    });
     res.status(200).json(applicants);
   } catch (error) {
     res.status(404).json({ error: error });
@@ -98,7 +105,7 @@ module.exports.getAwaitingApplicants = async (req, res) => {
 
 module.exports.getAcceptedApplicants = async (req, res) => {
   try {
-    const applicants = await UserApplied.find({ isAccepted: true });
+    const applicants = await UserApplied.find({ isAccepted: 1 });
     res.status(200).json(applicants);
   } catch (error) {
     res.status(404).json({ error: error });
@@ -108,8 +115,7 @@ module.exports.getAcceptedApplicants = async (req, res) => {
 module.exports.getRejectedApplicants = async (req, res) => {
   try {
     const applicants = await UserApplied.find({
-      isAccepted: false,
-      interviewCompleted: true,
+      isAccepted: -1,
     });
     res.status(200).json(applicants);
   } catch (error) {
@@ -123,7 +129,7 @@ module.exports.acceptApplicant = async (req, res) => {
     const update_applicant = await UserApplied.findOneAndUpdate(
       { _id: id },
       {
-        isAccepted: true,
+        isAccepted: 1,
       }
     );
 
@@ -150,7 +156,7 @@ module.exports.rejectApplicant = async (req, res) => {
     const update_applicant = await UserApplied.findOneAndUpdate(
       { _id: id },
       {
-        isAccepted: false,
+        isAccepted: -1,
       }
     );
 
@@ -210,7 +216,10 @@ module.exports.setMarks = async (req, res) => {
     enthusiasmScore,
     remarksByRecruiter,
   } = req.body;
-  const totalScore = taskCompletionScore + codingSkillsScore + enthusiasmScore;
+  const totalScore =
+    parseInt(taskCompletionScore) +
+    parseInt(codingSkillsScore) +
+    parseInt(enthusiasmScore);
   try {
     const update_applicant = await UserApplied.findOneAndUpdate(
       { _id: id },
