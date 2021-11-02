@@ -4,6 +4,7 @@ const cors = require("cors");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const Session = require("express-session");
+const flash = require('connect-flash');
 
 const db = require("./db");
 const projectRouter = require("./routes/project-router");
@@ -12,6 +13,7 @@ const lectureRouter = require("./routes/lecture-router");
 const galleryRouter = require("./routes/gallery-router");
 const authRouter = require("./routes/auth-router");
 const userProfileRouter = require("./routes/user-profile-router");
+const placementRouter = require("./routes/placement-router");
 const User = require("./models/user");
 const contactRouter = require("./routes/contact-router");
 const userRouter = require("./routes/user-router");
@@ -29,6 +31,7 @@ app.use(express.json());
 app.use(
   Session({ secret: "Thisissecret", resave: true, saveUninitialized: true })
 );
+app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
@@ -49,6 +52,7 @@ app.use("/api", lectureRouter);
 app.use("/api", galleryRouter);
 app.use("/api", contactRouter);
 app.use("/api", userRouter);
+app.use("/api", placementRouter);
 app.use("/api", noticesRouter);
 app.use("/api", formsRouter);
 app.use("/api", applicantRouter);

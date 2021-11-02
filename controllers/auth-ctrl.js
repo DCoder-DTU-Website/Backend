@@ -39,7 +39,6 @@ module.exports.authenticateTokenAdmin = (req, res, next) => {
   try {
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
-
     if (token == null) return res.sendStatus(401);
 
     jwt.verify(token, "Thisissecret", async (err, user) => {
@@ -50,6 +49,31 @@ module.exports.authenticateTokenAdmin = (req, res, next) => {
         username: user.username,
       }).exec();
       if (userDb.isAdmin) {
+        req.user = userDb;
+      } else {
+        return res.sendStatus(401);
+      }
+      next();
+    });
+  } catch (err) {
+    res.send(err);
+  }
+};
+
+module.exports.authenticateTokenRecruiter = (req, res, next) => {
+  try {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
+    if (token == null) return res.sendStatus(401);
+
+    jwt.verify(token, "Thisissecret", async (err, user) => {
+      if (err) return res.sendStatus(403);
+
+      const userDb = await User.findOne({
+        email: user.email,
+        username: user.username,
+      }).exec();
+      if (userDb.isRecruiter) {
         req.user = userDb;
       } else {
         return res.sendStatus(401);
@@ -112,8 +136,8 @@ module.exports.resetPass = (req, res) => {
   let transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "temp24918@gmail.com", // generated ethereal user
-      pass: "temp@999", // generated ethereal password
+      user: "ttemp5172@gmail.com", // generated ethereal user
+      pass: "temp@123", // generated ethereal password
     },
     tls: {
       rejectUnauthorized: false,
@@ -134,12 +158,52 @@ module.exports.resetPass = (req, res) => {
       user.save().then((result) => {
         transporter.sendMail({
           to: user.email,
-          from: "temp24918@gmail.com",
+          from: "ttemp5172@gmail.com",
           subject: "Password reset",
           html: `
           <p>You requested for password reset.</p>
           <h2> Valid for 1hr only </h2>
-          <h5>Click on this <a href = "http://localhost:3000/reset/${token}">link </a> to reset your password.</h5>
+          <h5>Click on this <a href = "https://teamdcoder.com/reset/${token}">link </a> to reset your password.</h5>
+          `,
+        });
+        res.send({ message: "Check your email" });
+      });
+    });
+  });
+};
+
+module.exports.forgotPass = (req, res) => {
+  let transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "ttemp5172@gmail.com", // generated ethereal user
+      pass: "temp@123", // generated ethereal password
+    },
+    tls: {
+      rejectUnauthorized: false,
+    },
+  });
+
+  crypto.randomBytes(32, (err, buffer) => {
+    if (err) {
+      console.log(err);
+    }
+    const token = buffer.toString("hex");
+    User.findOne({ email: req.body.email }).then((user) => {
+      if (!user) {
+        return res.send({ message: "No such user exist !" });
+      }
+      user.resetToken = token;
+      user.expireToken = Date.now() + 3600000;
+      user.save().then((result) => {
+        transporter.sendMail({
+          to: user.email,
+          from: "ttemp5172@gmail.com",
+          subject: "Password Forgot",
+          html: `
+          <p>You requested for password forgot.</p>
+          <h2> Valid for 1hr only </h2>
+          <h5>Click on this <a href = "https://teamdcoder.com/forgot/${token}">link </a> to reset your password.</h5>
           `,
         });
         res.send({ message: "Check your email" });
@@ -157,6 +221,26 @@ module.exports.passwordReset = (req, res) => {
       return res.send({ message: "Token is expired" });
     }
     user.changePassword(req.body.oldPassword, req.body.newPassword, (err) => {
+      if (err) return res.send({ message: "Invalid Password" });
+      else {
+        user.resetToken = undefined;
+        user.expireToken = undefined;
+        user.save();
+        return res.send({ message: "Password Changed Successfully" });
+      }
+    });
+  });
+};
+
+module.exports.passwordForgot = (req, res) => {
+  User.findOne({
+    resetToken: req.body.token,
+    expireToken: { $gt: Date.now() },
+  }).then((user) => {
+    if (!user) {
+      return res.send({ message: "Token is expired" });
+    }
+    user.setPassword(req.body.newPassword, (err) => {
       if (err) return res.send({ message: "Invalid Password" });
       else {
         user.resetToken = undefined;

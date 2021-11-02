@@ -44,18 +44,34 @@ const UserApplied = new mongoose.Schema({
     required: true,
   },
   isAccepted: {
-    type: Boolean,
+    type: Number, // -1 => Rejected / 0 => Not Evaluated by Admin / 1 => Accepted
   },
   interviewCompleted: {
     type: Boolean,
   },
-  inteviewLink: {
+  interviewLink: {
     type: String,
   },
   interviewTime: {
     type: String,
   },
   interviewerName: {
+    type: String,
+  },
+  taskCompletionScore: {
+    type: Number,
+  },
+  codingSkillsScore: {
+    type: Number,
+  },
+  enthusiasmScore: {
+    type: Number,
+  },
+  totalScore: {
+    type: Number,
+  },
+  idRecruiter: { type: mongoose.Types.ObjectId, ref: "user" },
+  remarksByRecruiter: {
     type: String,
   },
 });
