@@ -5,6 +5,10 @@ const UserApplied = new mongoose.Schema({
     type: String,
     required: true,
   },
+  image:{
+    type: String,
+    required: true,
+  },
   roll: {
     type: String,
     required: true,

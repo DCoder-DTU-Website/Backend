@@ -2,7 +2,7 @@ const User = require("../models/user");
 const mongoose = require("mongoose");
 
 module.exports.deleteProfile = (req, res) => {
-    User.findOneAndDelete({ username: req.params.email }, (err, user) => {
+    User.findOneAndDelete({ email: req.params.email }, (err, user) => {
       if (err) {
         return res.status(400).json({ success: false, error: err });
       }
