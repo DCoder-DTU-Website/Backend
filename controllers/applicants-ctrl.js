@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const UserApplied = require("../models/applicants");
+const UserProfile = require("../models/user-profile");
 const { sendMail } = require("../utils/node-mailer");
 
 function splitToChunks(array, parts) {
@@ -8,6 +9,20 @@ function splitToChunks(array, parts) {
     result.push(array.splice(0, Math.ceil(array.length / i)));
   }
   return result;
+}
+
+function shuffle(array) {
+  let currentIndex = array.length,
+    randomIndex;
+  while (currentIndex != 0) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex],
+      array[currentIndex],
+    ];
+  }
+  return array;
 }
 
 // For User
@@ -39,12 +54,14 @@ module.exports.assignApplicantsToRecruiters = async (req, res) => {
     let reqs = req.body.payload;
     console.log("REQS!", reqs);
     reqs.forEach(async (entry) => {
+      const interviewer = await UserProfile.findOne({ _id: entry.idRecruiter });
       await UserApplied.updateMany(
         {
           _id: { $in: entry.idApplicants },
         },
         {
           idRecruiter: mongoose.Types.ObjectId(entry.idRecruiter),
+          interviewerName: interviewer.firstName + " " + interviewer.lastName,
         }
       );
     });
@@ -58,6 +75,8 @@ module.exports.assignApplicantsToRecruitersBulk = async (req, res) => {
   try {
     //idRecruiters: ['...','...',...], idApplicants: ['...','...',...]
     let { idRecruiters, idApplicants } = req.body;
+    idRecruiters = shuffle(idRecruiters);
+    idApplicants = shuffle(idApplicants);
     idApplicants = splitToChunks(idApplicants, idRecruiters.length);
     let reqs = idRecruiters.map((id, index) => {
       return {
@@ -66,12 +85,14 @@ module.exports.assignApplicantsToRecruitersBulk = async (req, res) => {
       };
     });
     reqs.forEach(async (entry) => {
+      const interviewer = await UserProfile.findOne({ _id: entry.idRecruiter });
       await UserApplied.updateMany(
         {
           _id: { $in: entry.idApplicants },
         },
         {
           idRecruiter: mongoose.Types.ObjectId(entry.idRecruiter),
+          interviewerName: interviewer.firstName + " " + interviewer.lastName,
         }
       );
     });
