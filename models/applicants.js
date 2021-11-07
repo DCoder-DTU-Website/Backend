@@ -5,6 +5,10 @@ const UserApplied = new mongoose.Schema({
     type: String,
     required: true,
   },
+  image:{
+    type: String,
+    required: true,
+  },
   roll: {
     type: String,
     required: true,
@@ -40,7 +44,7 @@ const UserApplied = new mongoose.Schema({
     required: true,
   },
   isAccepted: {
-    type: Boolean,
+    type: Number, // -1 => Rejected / 0 => Not Evaluated by Admin / 1 => Accepted
   },
   interviewCompleted: {
     type: Boolean,
@@ -66,7 +70,7 @@ const UserApplied = new mongoose.Schema({
   totalScore: {
     type: Number,
   },
-  idRecruiter: {type: mongoose.Types.ObjectId, ref: 'user'},
+  idRecruiter: { type: mongoose.Types.ObjectId, ref: "user" },
   remarksByRecruiter: {
     type: String,
   },
