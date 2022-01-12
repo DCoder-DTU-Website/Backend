@@ -5,8 +5,9 @@ const passportLocalMongoose = require("passport-local-mongoose");
 const User = new Schema({
   email: { type: String, required: true, unique: true },
   isAdmin: { type: Boolean, required: true },
-  resetToken:String,
-  expireToken:Date
+  resetToken: String,
+  expireToken: Date,
+  isRecruiter: { type: Boolean },
 });
 
 User.plugin(passportLocalMongoose);

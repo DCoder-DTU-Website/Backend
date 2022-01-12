@@ -39,7 +39,6 @@ module.exports.authenticateTokenAdmin = (req, res, next) => {
   try {
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
-
     if (token == null) return res.sendStatus(401);
 
     jwt.verify(token, "Thisissecret", async (err, user) => {
@@ -50,6 +49,31 @@ module.exports.authenticateTokenAdmin = (req, res, next) => {
         username: user.username,
       }).exec();
       if (userDb.isAdmin) {
+        req.user = userDb;
+      } else {
+        return res.sendStatus(401);
+      }
+      next();
+    });
+  } catch (err) {
+    res.send(err);
+  }
+};
+
+module.exports.authenticateTokenRecruiter = (req, res, next) => {
+  try {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
+    if (token == null) return res.sendStatus(401);
+
+    jwt.verify(token, "Thisissecret", async (err, user) => {
+      if (err) return res.sendStatus(403);
+
+      const userDb = await User.findOne({
+        email: user.email,
+        username: user.username,
+      }).exec();
+      if (userDb.isRecruiter) {
         req.user = userDb;
       } else {
         return res.sendStatus(401);
@@ -148,7 +172,6 @@ module.exports.resetPass = (req, res) => {
   });
 };
 
-
 module.exports.forgotPass = (req, res) => {
   let transporter = nodemailer.createTransport({
     service: "gmail",
@@ -208,7 +231,6 @@ module.exports.passwordReset = (req, res) => {
     });
   });
 };
-
 
 module.exports.passwordForgot = (req, res) => {
   User.findOne({
