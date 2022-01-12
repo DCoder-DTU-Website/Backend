@@ -4,7 +4,7 @@ const cors = require("cors");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const Session = require("express-session");
-const flash = require('connect-flash');
+const flash = require("connect-flash");
 
 const db = require("./db");
 const projectRouter = require("./routes/project-router");
@@ -56,4 +56,7 @@ app.use("/api", placementRouter);
 app.use("/api", noticesRouter);
 app.use("/api", formsRouter);
 app.use("/api", applicantRouter);
+
+// module.exports = app;
+
 app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`));

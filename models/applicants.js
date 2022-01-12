@@ -41,11 +41,13 @@ const UserApplied = new mongoose.Schema({
   },
   isAccepted: {
     type: Boolean,
+    default: false,
   },
   interviewCompleted: {
     type: Boolean,
+    default: false,
   },
-  inteviewLink: {
+  interviewLink: {
     type: String,
   },
   interviewTime: {

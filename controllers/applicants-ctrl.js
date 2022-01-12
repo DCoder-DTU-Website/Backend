@@ -62,11 +62,13 @@ module.exports.createApplicant = async (req, res) => {
       };
 
       transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-          res.send("Unable to send the mail to you");
-        } else {
-          res.send("Email sent: " + info.response);
-        }
+        console.log("THIS IS MAIL RESP: ", error, info);
+        // if (error) {
+        //   res.status(400).json({
+        //     success: false,
+        //     message: "Unable to send the mail to you",
+        //   });
+        // }
       });
       res.status(201).json(new_applicant);
     });
@@ -113,17 +115,13 @@ module.exports.setInterview = async (req, res) => {
 
     var mailOptions = {
       from: "temp24918@gmail.com",
-      to: new_applicant.email,
+      to: update_applicant.email,
       subject: "Interview has been set",
       text: "Details of interview!",
     };
 
     transporter.sendMail(mailOptions, function (error, info) {
-      if (error) {
-        res.send("Unable to send the mail to you");
-      } else {
-        res.send("Email sent: " + info.response);
-      }
+      console.log("THIS IS MAIL RESP: ", error, info);
     });
     return res
       .status(200)
@@ -156,17 +154,13 @@ module.exports.acceptApplicant = async (req, res) => {
 
     var mailOptions = {
       from: "temp24918@gmail.com",
-      to: new_applicant.email,
+      to: update_applicant.email,
       subject: "Accepted to D_Coder",
       text: "Welcome to D_Coder",
     };
 
     transporter.sendMail(mailOptions, function (error, info) {
-      if (error) {
-        res.send("Unable to send the mail to you");
-      } else {
-        res.send("Email sent: " + info.response);
-      }
+      console.log("THIS IS MAIL RESP: ", error, info);
     });
     return res
       .status(200)
@@ -205,11 +199,7 @@ module.exports.rejectApplicant = async (req, res) => {
     };
 
     transporter.sendMail(mailOptions, function (error, info) {
-      if (error) {
-        res.send("Unable to send the mail to you");
-      } else {
-        res.send("Email sent: " + info.response);
-      }
+      console.log("THIS IS MAIL RESP: ", error, info);
     });
     return res
       .status(200)
