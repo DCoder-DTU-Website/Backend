@@ -50,10 +50,10 @@ router.post(
 );
 
 // For Recruiter
-router.get(
+router.post(
   "/applicants/all-recruiter",
-  authCtrl.authenticateTokenRecruiter,
-  applicantCtrl.getApplicants
+  // authCtrl.authenticateTokenRecruiter,
+  applicantCtrl.getRecruiterApplicants
 );
 router.get(
   "/applicants/awaiting-recruiter",

@@ -15,6 +15,9 @@ module.exports.updateProfile = async (req, res) => {
 module.exports.getProfile = async (req, res) => {
   try {
     const user = req.body.user || req.body.userFromAdmin;
+    if (!user.email) {
+      return;
+    }
     const userProfile = await UserProfile.findOne({ email: user.email });
     res.send(userProfile);
   } catch (err) {

@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.post(
   "/forms/add",
-  authCtrl.authenticateTokenAdmin,
+  // authCtrl.authenticateTokenAdmin,
   FormsCtrl.createForm
 );
 router.get("/forms/all", FormsCtrl.getForms);
