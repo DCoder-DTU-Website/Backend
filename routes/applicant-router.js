@@ -52,7 +52,7 @@ router.post(
 // For Recruiter
 router.post(
   "/applicants/all-recruiter",
-  // authCtrl.authenticateTokenRecruiter,
+  authCtrl.authenticateTokenRecruiter,
   applicantCtrl.getRecruiterApplicants
 );
 router.get(
