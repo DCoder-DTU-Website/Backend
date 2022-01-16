@@ -32,6 +32,12 @@ module.exports.createApplicant = async (req, res) => {
     isAccepted: 0,
   });
   try {
+    const checkUser = await UserApplied.findOne({ email: new_applicant.email });
+    if (checkUser) {
+      return res.status(400).json({
+        message: "You have already applied for this Society",
+      });
+    }
     new_applicant.save().then(() => {
       const mailRes = sendMail({
         from: "temp24918@gmail.com",
@@ -106,6 +112,16 @@ module.exports.assignApplicantsToRecruitersBulk = async (req, res) => {
 module.exports.getApplicants = async (req, res) => {
   try {
     const applicants = await UserApplied.find();
+    res.status(200).json(applicants);
+  } catch (error) {
+    res.status(404).json({ error: error });
+  }
+};
+
+module.exports.getRecruiterApplicants = async (req, res) => {
+  const { userId } = req.body;
+  try {
+    const applicants = await UserApplied.find({ idRecruiter: userId });
     res.status(200).json(applicants);
   } catch (error) {
     res.status(404).json({ error: error });

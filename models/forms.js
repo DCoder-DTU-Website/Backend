@@ -7,7 +7,7 @@ const Forms = new Schema(
     desc: { type: String, required: true },
     form_url: { type: String, required: true },
     response_url: { type: String, required: true },
-    deadline: { type: Date, required: true },
+    deadline: { type: String, required: true },
     image: { type: String, required: false },
   },
   { timestamps: true }
