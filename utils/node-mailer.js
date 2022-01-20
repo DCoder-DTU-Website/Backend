@@ -20,7 +20,7 @@ module.exports.sendMail = (
   });
 
   const mail = {
-    from: mailOptions.from,
+    from: transporterOptions.user,
     to: mailOptions.to,
     bcc: mailOptions.bcc,
     subject: mailOptions.subject,
