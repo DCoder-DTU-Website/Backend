@@ -34,8 +34,8 @@ module.exports.createApplicant = async (req, res) => {
   try {
     const checkUser = await UserApplied.findOne({ email: new_applicant.email });
     if (checkUser) {
-      return res.status(400).json({
-        message: "You have already applied for this Society",
+      return res.status(406).json({
+        message: "You have already filled the form!",
       });
     }
     new_applicant.save().then(() => {
