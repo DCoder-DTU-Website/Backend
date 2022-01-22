@@ -40,7 +40,7 @@ module.exports.createApplicant = async (req, res) => {
     }
     new_applicant.save().then(() => {
       const mailRes = sendMail({
-        from: "dcoderquery@gmail.com",
+        from: "recruitmentdcoder@gmail.com ",
         to: new_applicant.email,
         subject: "Confirmation of Registration",
         html: `<!DOCTYPE html>
@@ -344,7 +344,7 @@ module.exports.acceptApplicant = async (req, res) => {
     );
 
     const mailRes = sendMail({
-      from: "dcoderquery@gmail.com",
+      from: "recruitmentdcoder@gmail.com ",
       to: update_applicant.email,
       subject: "Accepted to D_Coder",
       text: "Welcome to D_Coder",
@@ -371,7 +371,7 @@ module.exports.rejectApplicant = async (req, res) => {
     );
 
     const mailRes = sendMail({
-      from: "dcoderquery@gmail.com",
+      from: "recruitmentdcoder@gmail.com ",
       to: update_applicant.email,
       subject: "Rejected Application",
       text: "Thanks for applying tho",
@@ -402,7 +402,7 @@ module.exports.setInterview = async (req, res) => {
     );
 
     const mailRes = sendMail({
-      from: "dcoderquery@gmail.com",
+      from: "recruitmentdcoder@gmail.com ",
       to: update_applicant.email,
       subject: "Interview has been set",
       text: "Details of interview!",
