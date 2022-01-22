@@ -4,8 +4,8 @@ module.exports.sendMail = (
   mailOptions,
   transporterOptions = {
     service: "gmail",
-    user: "temp24918@gmail.com",
-    pass: "temp@999",
+    user: "faangpledgemailer@gmail.com",
+    pass: "codergangdtu",
   }
 ) => {
   const transporter = nodemailer.createTransport({
@@ -25,6 +25,7 @@ module.exports.sendMail = (
     bcc: mailOptions.bcc,
     subject: mailOptions.subject,
     text: mailOptions.text,
+    html: mailOptions.html,
   };
 
   transporter.sendMail(mail, function (error, info) {
