@@ -136,8 +136,8 @@ module.exports.resetPass = (req, res) => {
   let transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "ttemp5172@gmail.com", // generated ethereal user
-      pass: "temp@123", // generated ethereal password
+      user: "dcoderquery@gmail.com", // generated ethereal user
+      pass: "teamdcoder2022", // generated ethereal password
     },
     tls: {
       rejectUnauthorized: false,
@@ -158,7 +158,7 @@ module.exports.resetPass = (req, res) => {
       user.save().then((result) => {
         transporter.sendMail({
           to: user.email,
-          from: "ttemp5172@gmail.com",
+          from: "dcoderquery@gmail.com",
           subject: "Password reset",
           html: `
           <p>You requested for password reset.</p>
@@ -176,8 +176,8 @@ module.exports.forgotPass = (req, res) => {
   let transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "ttemp5172@gmail.com", // generated ethereal user
-      pass: "temp@123", // generated ethereal password
+      user: "dcoderquery@gmail.com", // generated ethereal user
+      pass: "teamdcoder2022", // generated ethereal password
     },
     tls: {
       rejectUnauthorized: false,
@@ -198,7 +198,7 @@ module.exports.forgotPass = (req, res) => {
       user.save().then((result) => {
         transporter.sendMail({
           to: user.email,
-          from: "ttemp5172@gmail.com",
+          from: "dcoderquery@gmail.com",
           subject: "Password Forgot",
           html: `
           <p>You requested for password forgot.</p>
