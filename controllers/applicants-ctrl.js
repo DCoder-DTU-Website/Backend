@@ -293,6 +293,7 @@ module.exports.getApplicants = async (req, res) => {
 
 module.exports.getRecruiterApplicants = async (req, res) => {
   const { userId } = req.body;
+  if (!userId) return res.status(200).json([]);
   try {
     const applicants = await UserApplied.find({ idRecruiter: userId });
     res.status(200).json(applicants);

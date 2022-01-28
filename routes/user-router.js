@@ -17,7 +17,7 @@ router.patch(
 );
 router.patch(
   "/user/:email/remove-recruiter",
-  // authCtrl.authenticateTokenAdmin,
+  authCtrl.authenticateTokenAdmin,
   userCtrl.removeRecruiter
 );
 

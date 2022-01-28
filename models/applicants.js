@@ -5,7 +5,7 @@ const UserApplied = new mongoose.Schema({
     type: String,
     required: true,
   },
-  image:{
+  image: {
     type: String,
     required: true,
   },
@@ -45,9 +45,11 @@ const UserApplied = new mongoose.Schema({
   },
   isAccepted: {
     type: Number, // -1 => Rejected / 0 => Not Evaluated by Admin / 1 => Accepted
+    default: 0,
   },
   interviewCompleted: {
     type: Boolean,
+    default: false,
   },
   interviewLink: {
     type: String,

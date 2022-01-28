@@ -4,13 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "nodemon index.js"
+  },
+  "jest": {
+    "preset": "@shelf/jest-mongodb"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@shelf/jest-mongodb": "^2.2.0",
     "body-parser": "^1.19.0",
     "connect-flash": "^0.1.1",
     "cors": "^2.8.5",
@@ -27,5 +31,12 @@
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^6.1.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "jest": "^27.4.7",
+    "superagent": "^7.0.1",
+    "supertest": "^6.1.6"
   }
 }
