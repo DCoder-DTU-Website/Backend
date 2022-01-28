@@ -34,16 +34,189 @@ module.exports.createApplicant = async (req, res) => {
   try {
     const checkUser = await UserApplied.findOne({ email: new_applicant.email });
     if (checkUser) {
-      return res.status(400).json({
-        message: "You have already applied for this Society",
+      return res.status(406).json({
+        message: "You have already filled the form!",
       });
     }
     new_applicant.save().then(() => {
       const mailRes = sendMail({
-        from: "temp24918@gmail.com",
+        from: "recruitmentdcoder@gmail.com ",
         to: new_applicant.email,
-        subject: "Dcoder mein swagat hai aapka",
-        text: "Aapki jaankari hamne prapt krli hai ab kriya krke pratiksha krein hum jldi hi aapse sampark karenge",
+        subject: "Confirmation of Registration",
+        html: `<!DOCTYPE html>
+        <html lang="en">
+          <head>
+            <meta charset="UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <title>Document</title>
+            <style>
+              @import url("https://fonts.googleapis.com/css2?family=Raleway:ital,wght@1,200&display=swap");
+        
+              * {
+                margin: 0;
+                padding: 0;
+                border: 0;
+              }
+        
+              body {
+                font-family: "Raleway", sans-serif;
+                background-color: #d8dada;
+                font-size: 19px;
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 3%;
+              }
+        
+              img {
+                max-width: 100%;
+              }
+        
+              header {
+                width: 98%;
+              }
+        
+              #logo {
+                max-width: 100px;
+                margin: 3% 0 3% 3%;
+                float: left;
+              }
+              #logo > img {
+                max-width: 80%;
+              }
+              #wrapper {
+                background-color: #f0f6fb;
+              }
+        
+              #social {
+                float: right;
+                margin: 3% 2% 4% 3%;
+                list-style-type: none;
+              }
+        
+              #social > li {
+                display: inline;
+              }
+        
+              #social > li > a > img {
+                max-width: 35px;
+              }
+        
+              h1,
+              p {
+                margin: 3%;
+              }
+              .btn {
+                float: right;
+                margin: 0 2% 4% 0;
+                background-color: #303840;
+                color: #f6faff;
+                text-decoration: none;
+                font-weight: 800;
+                padding: 8px 12px;
+                border-radius: 8px;
+                letter-spacing: 2px;
+              }
+        
+              hr {
+                height: 1px;
+                background-color: #303840;
+                clear: both;
+                width: 96%;
+                margin: auto;
+              }
+        
+              #contact {
+                text-align: left;
+                padding-bottom: 3%;
+                line-height: 16px;
+                font-size: 12px;
+                color: #303840;
+              }
+            </style>
+          </head>
+          <body>
+            <div id="wrapper">
+              <header>
+                <div id="logo">
+                  <img
+                    src="https://res.cloudinary.com/dcoderdtu/image/upload/v1642826937/D_CODER_LOGO_color_1_lzxspa.png"
+                    alt=""
+                  />
+                </div>
+                <div>
+                  <ul id="social">
+                    <li>
+                      <a
+                        href="https://www.linkedin.com/company/dcoder/mycompany/"
+                        target="_blank"
+                        ><img
+                          src="https://cdn-icons-png.flaticon.com/512/174/174857.png"
+                          alt=""
+                      /></a>
+                    </li>
+                    <li>
+                      <a href="https://www.instagram.com/d_coder_dtu/" target="_blank"
+                        ><img
+                          src="https://cdn-icons-png.flaticon.com/512/174/174855.png"
+                          alt=""
+                      /></a>
+                    </li>
+                    <li>
+                      <a
+                        href="https://www.youtube.com/channel/UCz0Bs3AXaa5ccEJBsLxyXzg"
+                        target="_blank"
+                        ><img
+                          src="https://cdn-icons-png.flaticon.com/512/174/174883.png"
+                          alt=""
+                      /></a>
+                    </li>
+                  </ul>
+                </div>
+              </header>
+              <div id="banner">
+                <img src="./eafd64f6-6f8f-46a9-9aae-295b64155e7a.jpg" alt="" />
+              </div>
+              <div class="one-col">
+                <h1>Dear ${new_applicant.name},<br /></h1>
+        
+                <p>Thank you for registering for D_CODER Recruitments.</p>
+        
+                <p>
+                  D_CODER is not just a society, we are a family in which we build
+                  connections, create innovations, and progress towards success. We
+                  support each other to learn, grow and work to achieve everything that
+                  one aspires to. .
+                </p>
+                <p>
+                  See What We Do, what Our Achievements are, and Our Projects that
+                  students just like you have built with their skills and guidance that
+                  they have gained from our society. And don’t forget to view Our
+                  Events, we are sure you also wanna be a part of them, and explore your
+                  creativity and event management skills. We have a variety of people
+                  that are ready to mentor you or be a part of your project, be it any
+                  field, say Web Development, Android Development, UI/UX and Graphic
+                  Design, Video Editing, Competitive Programming, Data Structures and
+                  Algorithms, and many more.
+                </p>
+                <p>
+                  If you have any questions or concerns, feel free to drop us an email
+                  at contact@teamdcoder.com.
+                </p>
+        
+                <hr />
+        
+                <footer>
+                  <p id="contact">
+                    Thanks,
+                    <br />
+                    Team D_CODER <br />
+                  </p>
+                </footer>
+              </div>
+            </div>
+          </body>
+        </html>
+        `,
       });
       res.status(201).json(new_applicant);
     });
@@ -120,6 +293,7 @@ module.exports.getApplicants = async (req, res) => {
 
 module.exports.getRecruiterApplicants = async (req, res) => {
   const { userId } = req.body;
+  if (!userId) return res.status(200).json([]);
   try {
     const applicants = await UserApplied.find({ idRecruiter: userId });
     res.status(200).json(applicants);
@@ -171,10 +345,175 @@ module.exports.acceptApplicant = async (req, res) => {
     );
 
     const mailRes = sendMail({
-      from: "temp24918@gmail.com",
+      from: "recruitmentdcoder@gmail.com ",
       to: update_applicant.email,
-      subject: "Accepted to D_Coder",
-      text: "Welcome to D_Coder",
+      subject: "ACCEPTED TO D_CODER",
+      text: "",
+      html: `<!DOCTYPE html>
+      <html lang="en">
+        <head>
+          <meta charset="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <title>Document</title>
+          <style>
+            @import url("https://fonts.googleapis.com/css2?family=Raleway:ital,wght@1,200&display=swap");
+      
+            * {
+              margin: 0;
+              padding: 0;
+              border: 0;
+            }
+      
+            body {
+              font-family: "Raleway", sans-serif;
+              background-color: #d8dada;
+              font-size: 19px;
+              max-width: 800px;
+              margin: 0 auto;
+              padding: 3%;
+            }
+      
+            img {
+              max-width: 100%;
+            }
+      
+            header {
+              width: 98%;
+            }
+      
+            #logo {
+              max-width: 120px;
+              margin: 3% 0 3% 3%;
+              float: left;
+            }
+      
+            #wrapper {
+              background-color: #f0f6fb;
+            }
+      
+            #social {
+              float: right;
+              margin: 3% 2% 4% 3%;
+              list-style-type: none;
+            }
+      
+            #social > li {
+              display: inline;
+            }
+      
+            #social > li > a > img {
+              max-width: 35px;
+            }
+      
+            h1,
+            p {
+              margin: 3%;
+            }
+            .btn {
+              float: right;
+              margin: 0 2% 4% 0;
+              background-color: #303840;
+              color: #f6faff;
+              text-decoration: none;
+              font-weight: 800;
+              padding: 8px 12px;
+              border-radius: 8px;
+              letter-spacing: 2px;
+            }
+      
+            hr {
+              height: 1px;
+              background-color: #303840;
+              clear: both;
+              width: 96%;
+              margin: auto;
+            }
+      
+            #contact {
+              text-align: left;
+              padding-bottom: 3%;
+              line-height: 16px;
+              font-size: 12px;
+              color: #303840;
+            }
+          </style>
+        </head>
+        <body>
+          <div id="wrapper">
+            <header>
+              <div id="logo">
+                <img
+                  src="https://res.cloudinary.com/dcoderdtu/image/upload/v1642826937/D_CODER_LOGO_color_1_lzxspa.png"
+                  alt=""
+                />
+              </div>
+              <div>
+                <ul id="social">
+                  <li>
+                    <a
+                      href="https://www.linkedin.com/company/dcoder/mycompany/"
+                      target="_blank"
+                      ><img
+                        src="https://cdn-icons-png.flaticon.com/512/174/174857.png"
+                        alt=""
+                    /></a>
+                  </li>
+                  <li>
+                    <a href="https://www.instagram.com/d_coder_dtu/" target="_blank"
+                      ><img
+                        src="https://cdn-icons-png.flaticon.com/512/174/174855.png"
+                        alt=""
+                    /></a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://www.youtube.com/channel/UCz0Bs3AXaa5ccEJBsLxyXzg"
+                      target="_blank"
+                      ><img
+                        src="https://cdn-icons-png.flaticon.com/512/174/174883.png"
+                        alt=""
+                    /></a>
+                  </li>
+                </ul>
+              </div>
+            </header>
+            <div id="banner">
+              <img src="./eafd64f6-6f8f-46a9-9aae-295b64155e7a.jpg" alt="" />
+            </div>
+            <div class="one-col">
+              <h1>
+                Dear ${update_applicant.name},<br />
+      
+                Congratulations! 🎉
+              </h1>
+      
+              <p>
+                We are excited to inform you that we ACCEPT you as a member of the
+                D_CODER society. We really hope that we will provide you with all the
+                support that we can in your journey ahead, and we expect the same from
+                you.
+              </p>
+      
+              <p>You will be added to the Whatsapp group shortly.</p>
+              <p>
+                If you have any questions or concerns, feel free to drop us an email
+                at contact@teamdcoder.com.
+              </p>
+      
+              <hr />
+      
+              <footer>
+                <p id="contact">
+                  Thanks,
+                  <br />
+                  Team D_CODER <br />
+                </p>
+              </footer>
+            </div>
+          </div>
+        </body>
+      </html>
+      `,
     });
 
     return res.status(200).json({
@@ -198,10 +537,170 @@ module.exports.rejectApplicant = async (req, res) => {
     );
 
     const mailRes = sendMail({
-      from: "temp24918@gmail.com",
+      from: "recruitmentdcoder@gmail.com ",
       to: update_applicant.email,
-      subject: "Rejected Application",
-      text: "Thanks for applying tho",
+      subject: "REJECTED TO D_CODER",
+      text: "",
+      html: `<!DOCTYPE html>
+      <html lang="en">
+        <head>
+          <meta charset="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <title>Document</title>
+          <style>
+            @import url("https://fonts.googleapis.com/css2?family=Raleway:ital,wght@1,200&display=swap");
+      
+            * {
+              margin: 0;
+              padding: 0;
+              border: 0;
+            }
+      
+            body {
+              font-family: "Raleway", sans-serif;
+              background-color: #d8dada;
+              font-size: 19px;
+              max-width: 800px;
+              margin: 0 auto;
+              padding: 3%;
+            }
+      
+            img {
+              max-width: 100%;
+            }
+      
+            header {
+              width: 98%;
+            }
+      
+            #logo {
+              max-width: 120px;
+              margin: 3% 0 3% 3%;
+              float: left;
+            }
+      
+            #wrapper {
+              background-color: #f0f6fb;
+            }
+      
+            #social {
+              float: right;
+              margin: 3% 2% 4% 3%;
+              list-style-type: none;
+            }
+      
+            #social > li {
+              display: inline;
+            }
+      
+            #social > li > a > img {
+              max-width: 35px;
+            }
+      
+            h1,
+            p {
+              margin: 3%;
+            }
+            .btn {
+              float: right;
+              margin: 0 2% 4% 0;
+              background-color: #303840;
+              color: #f6faff;
+              text-decoration: none;
+              font-weight: 800;
+              padding: 8px 12px;
+              border-radius: 8px;
+              letter-spacing: 2px;
+            }
+      
+            hr {
+              height: 1px;
+              background-color: #303840;
+              clear: both;
+              width: 96%;
+              margin: auto;
+            }
+      
+            #contact {
+              text-align: left;
+              padding-bottom: 3%;
+              line-height: 16px;
+              font-size: 12px;
+              color: #303840;
+            }
+          </style>
+        </head>
+        <body>
+          <div id="wrapper">
+            <header>
+              <div id="logo">
+                <img
+                  src="https://res.cloudinary.com/dcoderdtu/image/upload/v1642826937/D_CODER_LOGO_color_1_lzxspa.png"
+                  alt=""
+                />
+              </div>
+              <div>
+                <ul id="social">
+                  <li>
+                    <a
+                      href="https://www.linkedin.com/company/dcoder/mycompany/"
+                      target="_blank"
+                      ><img
+                        src="https://cdn-icons-png.flaticon.com/512/174/174857.png"
+                        alt=""
+                    /></a>
+                  </li>
+                  <li>
+                    <a href="https://www.instagram.com/d_coder_dtu/" target="_blank"
+                      ><img
+                        src="https://cdn-icons-png.flaticon.com/512/174/174855.png"
+                        alt=""
+                    /></a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://www.youtube.com/channel/UCz0Bs3AXaa5ccEJBsLxyXzg"
+                      target="_blank"
+                      ><img
+                        src="https://cdn-icons-png.flaticon.com/512/174/174883.png"
+                        alt=""
+                    /></a>
+                  </li>
+                </ul>
+              </div>
+            </header>
+            <div id="banner">
+              <img src="./eafd64f6-6f8f-46a9-9aae-295b64155e7a.jpg" alt="" />
+            </div>
+            <div class="one-col">
+              <h1>Dear ${update_applicant.name},<br /></h1>
+      
+              <p>
+                We are sorry to inform you that you are not selected as a member of
+                the D_CODER society. We really hope that you will work on your skills
+                and will be shortlisted next time you apply. We wish you a happy
+                journey ahead!
+              </p>
+      
+              <p>
+                If you have any questions or concerns, feel free to drop us an email
+                at contact@teamdcoder.com.
+              </p>
+      
+              <hr />
+      
+              <footer>
+                <p id="contact">
+                  Thanks,
+                  <br />
+                  Team D_CODER <br />
+                </p>
+              </footer>
+            </div>
+          </div>
+        </body>
+      </html>
+      `,
     });
 
     return res.status(200).json({
@@ -229,10 +728,177 @@ module.exports.setInterview = async (req, res) => {
     );
 
     const mailRes = sendMail({
-      from: "temp24918@gmail.com",
+      from: "recruitmentdcoder@gmail.com ",
       to: update_applicant.email,
-      subject: "Interview has been set",
-      text: "Details of interview!",
+      subject: "DETAILS OF INTERVIEW",
+      text: "",
+      html: `<!DOCTYPE html>
+      <html lang="en">
+        <head>
+          <meta charset="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <title>Document</title>
+          <style>
+            @import url("https://fonts.googleapis.com/css2?family=Raleway:ital,wght@1,200&display=swap");
+      
+            * {
+              margin: 0;
+              padding: 0;
+              border: 0;
+            }
+      
+            body {
+              font-family: "Raleway", sans-serif;
+              background-color: #d8dada;
+              font-size: 19px;
+              max-width: 800px;
+              margin: 0 auto;
+              padding: 3%;
+            }
+      
+            img {
+              max-width: 100%;
+            }
+      
+            header {
+              width: 98%;
+            }
+      
+            #logo {
+              max-width: 120px;
+              margin: 3% 0 3% 3%;
+              float: left;
+            }
+      
+            #wrapper {
+              background-color: #f0f6fb;
+            }
+      
+            #social {
+              float: right;
+              margin: 3% 2% 4% 3%;
+              list-style-type: none;
+            }
+      
+            #social > li {
+              display: inline;
+            }
+      
+            #social > li > a > img {
+              max-width: 35px;
+            }
+      
+            h1,
+            p {
+              margin: 3%;
+            }
+            .btn {
+              float: right;
+              margin: 0 2% 4% 0;
+              background-color: #303840;
+              color: #f6faff;
+              text-decoration: none;
+              font-weight: 800;
+              padding: 8px 12px;
+              border-radius: 8px;
+              letter-spacing: 2px;
+            }
+      
+            hr {
+              height: 1px;
+              background-color: #303840;
+              clear: both;
+              width: 96%;
+              margin: auto;
+            }
+      
+            #contact {
+              text-align: left;
+              padding-bottom: 3%;
+              line-height: 16px;
+              font-size: 12px;
+              color: #303840;
+            }
+          </style>
+        </head>
+        <body>
+          <div id="wrapper">
+            <header>
+              <div id="logo">
+                <img
+                  src="https://res.cloudinary.com/dcoderdtu/image/upload/v1642826937/D_CODER_LOGO_color_1_lzxspa.png"
+                  alt=""
+                />
+              </div>
+              <div>
+                <ul id="social">
+                  <li>
+                    <a
+                      href="https://www.linkedin.com/company/dcoder/mycompany/"
+                      target="_blank"
+                      ><img
+                        src="https://cdn-icons-png.flaticon.com/512/174/174857.png"
+                        alt=""
+                    /></a>
+                  </li>
+                  <li>
+                    <a href="https://www.instagram.com/d_coder_dtu/" target="_blank"
+                      ><img
+                        src="https://cdn-icons-png.flaticon.com/512/174/174855.png"
+                        alt=""
+                    /></a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://www.youtube.com/channel/UCz0Bs3AXaa5ccEJBsLxyXzg"
+                      target="_blank"
+                      ><img
+                        src="https://cdn-icons-png.flaticon.com/512/174/174883.png"
+                        alt=""
+                    /></a>
+                  </li>
+                </ul>
+              </div>
+            </header>
+            <div id="banner">
+              <img src="./eafd64f6-6f8f-46a9-9aae-295b64155e7a.jpg" alt="" />
+            </div>
+            <div class="one-col">
+              <h1>Dear ${update_applicant.name},<br /></h1>
+      
+              <p>
+                It's time to be prepared! Your interview schedule and other details
+                for the selection process for D_CODER are given below:
+              </p>
+              <p>
+                Date and Time of the Interview: ${update_applicant.interviewTime} <br />
+                Interviewer’s name: ${update_applicant.interviewerName}<br />
+              </p>
+              <p>
+                You can join the interview meeting by clicking the following link:<br />
+                ${update_applicant.interviewLink}
+              </p>
+              <p>Your interviewer will contact you shortly.</p>
+              <p>GOOD LUCK!</p>
+              <p>
+                If you have any questions or concerns, feel free to drop us an email
+                at contact@teamdcoder.com.
+              </p>
+      
+              <hr />
+      
+              <footer>
+                <p id="contact">
+                  Thanks,
+                  <br />
+                  Team D_CODER <br />
+                </p>
+              </footer>
+            </div>
+          </div>
+        </body>
+      </html>
+      `,
     });
 
     return res.status(200).json({

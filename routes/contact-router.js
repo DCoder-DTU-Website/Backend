@@ -16,11 +16,12 @@ router.post("/send", (req, res) => {
         `;
 
   // create reusable transporter object using the default SMTP transport
+  console.log(req.body);
   let transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "ttemp5172@gmail.com", // generated ethereal user
-      pass: "temp@123", // generated ethereal password
+      user: "dcoderquery@gmail.com", // generated ethereal user
+      pass: "teamdcoder2022", // generated ethereal password
     },
     tls: {
       rejectUnauthorized: false,
@@ -29,18 +30,18 @@ router.post("/send", (req, res) => {
 
   // setup email data with unicode symbols
   let mailOptions = {
-    from: '"Nodemailer Contact" ttemp5172@gmail.com', // sender address
+    from: "dcoderquery@gmail.com", // sender address
     to: "connectdcoder@gmail.com", // list of receivers
     subject: "Node Contact Request", // Subject line
     text: "Hello world?", // plain text body
     html: output, // html body
   };
-
   // send mail with defined transport object
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       return console.log(error);
     }
+    res.send(info);
   });
 });
 
