@@ -4,7 +4,7 @@ module.exports.sendMail = (
   mailOptions,
   transporterOptions = {
     service: "gmail",
-    user: "recruitmentdcoder@gmail.com ",
+    user: "recruitmentdcoder@gmail.com",
     pass: "teamdcoder2022",
   }
 ) => {
