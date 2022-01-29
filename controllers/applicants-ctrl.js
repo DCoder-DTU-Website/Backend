@@ -724,9 +724,11 @@ module.exports.setInterview = async (req, res) => {
         interviewTime: interviewTime,
         interviewLink: interviewLink,
         interviewerName: interviewerName,
+      },
+      {
+        returnOriginal: false,
       }
     );
-
     const mailRes = sendMail({
       from: "recruitmentdcoder@gmail.com ",
       to: update_applicant.email,
